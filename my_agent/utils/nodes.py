@@ -1,6 +1,7 @@
 from functools import lru_cache
 from langchain_anthropic import ChatAnthropic
 from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from my_agent.utils.tools import tools
 from langgraph.prebuilt import ToolNode
 
@@ -11,6 +12,8 @@ def _get_model(model_name: str):
         model = ChatOpenAI(temperature=0, model_name="gpt-4o")
     elif model_name == "anthropic":
         model =  ChatAnthropic(temperature=0, model_name="claude-3-sonnet-20240229")
+    elif model_name == "groq":
+        model = ChatGroq(temperature=0, model_name="llama3-70b-8192")
     else:
         raise ValueError(f"Unsupported model type: {model_name}")
 
@@ -29,13 +32,13 @@ def should_continue(state):
         return "continue"
 
 
-system_prompt = """Be a helpful assistant"""
+system_prompt = """Be a helpful assistant and only call tools when asked for or neccesaary. """
 
 # Define the function that calls the model
 def call_model(state, config):
     messages = state["messages"]
     messages = [{"role": "system", "content": system_prompt}] + messages
-    model_name = config.get('configurable', {}).get("model_name", "anthropic")
+    model_name = config.get('configurable', {}).get("model_name", "groq")
     model = _get_model(model_name)
     response = model.invoke(messages)
     # We return a list, because this will get added to the existing list
