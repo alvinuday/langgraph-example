@@ -1,7 +1,7 @@
 from langchain_core.tools import tool
 # from langchain_community.tools.tavily_search import TavilySearchResults
 import requests
-notion_token = "secret_uEqMcm68e3DBveKpK6UmmiXYTAew9T2CrONOXINhKT9"
+notion_token = process.env.NOTION_SECRET
 block_id = "7c397a7e-de7b-417c-835b-67524029a5cb"
 
 
